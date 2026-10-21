@@ -55,22 +55,26 @@
   <p class="sub">这是云端地址，手机用流量、在外地都能打开，<br>和电脑看到的是同一份记录。</p>
   <div class="qr" id="qr">正在生成二维码…</div>
   <div class="addr"><code id="addr">正在获取地址…</code><button id="copy" type="button">复制</button></div>
-  <div class="warn" id="warn">请先把这个文件夹部署到网上（GitHub Pages 等），得到公开网址后再打开本页扫码。</div>
+  <div class="warn" id="warn">第一次打开若出现腾讯云「风险提醒」，等 3 秒点「确定访问」即可，之后不再出现。</div>
   <ol>
     <li>手机相机或浏览器扫描二维码</li>
+    <li>若出现「风险提醒」，等 3 秒点「确定访问」</li>
     <li>打开后在浏览器里「添加到主屏幕」</li>
     <li>以后点桌面图标，随时都能用</li>
   </ol>
-  <a class="btn" href="./">进入日常</a>
-  <p class="foot">数据存在云端，手机和电脑自动同步</p>
+  <a class="btn" id="goApp" href="https://daily-d1gmzocti21fcec0b-1512097170.tcloudbaseapp.com/">进入日常</a>
+  <p class="foot">数据存在腾讯云开发，手机和电脑自动同步</p>
 </main>
 <script src="vendor-qrcode.js"></script>
 <script>
 (function(){
-  var url = location.origin;
+  var SITE_URL = 'https://daily-d1gmzocti21fcec0b-1512097170.tcloudbaseapp.com/';
+  var url = SITE_URL;
   var addrEl = document.getElementById('addr');
   var qrEl = document.getElementById('qr');
   var warn = document.getElementById('warn');
+  var goApp = document.getElementById('goApp');
+  goApp.href = SITE_URL;
 
   function draw(u){
     try {
@@ -91,7 +95,7 @@
   }
   if (/^https?:$/.test(location.protocol) && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
     warn.style.display = 'block';
-    warn.textContent = '现在是本机预览地址，手机打不开。部署到 GitHub Pages 后，用公开网址打开本页再扫码。';
+    warn.textContent = '现在是本机预览地址，手机打不开；二维码指向 CloudBase 线上地址。';
   }
 
   draw(url);

@@ -2,6 +2,15 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
+<script>
+/* GitHub Pages 只作为入口：CloudBase 体验版不允许把 gcmg-2002.github.io 加进跨域白名单，
+   所以应用实际运行在 CloudBase 静态托管的默认域名（该域名已在白名单里，跨域可用）。 */
+(function(){
+  if (location.hostname === 'gcmg-2002.github.io') {
+    location.replace('https://daily-d1gmzocti21fcec0b-1512097170.tcloudbaseapp.com/' + location.search + location.hash);
+  }
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="light" />
 <meta name="theme-color" content="#f5f6f8" />
