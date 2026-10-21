@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>迁移旧数据 · 日常</title>
+<link rel="icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23111518'/%3E%3Ctext x='50' y='71' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E6%97%A5%3C/text%3E%3C/svg%3E" />
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{
+    display:flex;align-items:center;justify-content:center;padding:28px 20px;
+    background:radial-gradient(900px 600px at 50% -10%,#e8eef8 0%,#f2f4f7 55%,#eceff4 100%);
+    color:#11161c;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  }
+  .card{width:100%;max-width:440px;background:#fff;border-radius:24px;padding:30px 28px;box-shadow:0 24px 60px rgba(17,22,28,.12);text-align:center}
+  .brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px}
+  .brand i{width:36px;height:36px;border-radius:11px;background:#11161c;color:#fff;display:grid;place-items:center;font-size:18px;font-weight:700;font-style:normal}
+  .brand b{font-size:18px;letter-spacing:.06em}
+  h1{margin:2px 0 8px;font-size:22px;font-weight:700;letter-spacing:-.01em}
+  p{margin:0 0 18px;font-size:13px;line-height:1.8;color:#8b95a3}
+  .btn{display:inline-block;margin:6px 4px;padding:11px 20px;border-radius:12px;background:#2f6bef;color:#fff;text-decoration:none;font-size:14px;font-weight:600;border:0;cursor:pointer}
+  .btn.ghost{background:#eef3ff;color:#2f6bef}
+  .tip{margin-top:18px;font-size:11.5px;color:#a4adba}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="brand"><i>日</i><b>日常</b></div>
+  <h1 id="msg">正在迁移旧数据…</h1>
+  <p>旧记录会合并到新地址，然后自动同步到云端。<br>如果新地址出现腾讯云「风险提醒」，等 3 秒点「确定访问」。</p>
+  <button class="btn" id="dl" hidden>下载旧数据备份</button>
+  <a class="btn ghost" id="go" href="https://daily-d1gmzocti21fcec0b-1512097170.tcloudbaseapp.com/" hidden>直接打开日常</a>
+  <p class="tip">只读取本机旧数据，不删除原记录。</p>
+  <noscript><p>请允许 JavaScript，或直接打开 <a href="https://daily-d1gmzocti21fcec0b-1512097170.tcloudbaseapp.com/">新地址</a>。</p></noscript>
+</main>
+<script>
+(function(){
+  var APP = 'https://daily-d1gmzocti21fcec0b-1512097170.tcloudbaseapp.com/';
+  var KEY = 'daybook.v2';
+  var raw = null;
+  try { raw = localStorage.getItem(KEY); } catch (e) {}
+
+  function go(){
+    try { localStorage.setItem('daily.migrated', '1'); } catch (e) {}
+    location.replace(APP);
+  }
+  function fallback(msg){
+    document.getElementById('msg').textContent = msg;
+    var btn = document.getElementById('dl');
+    btn.hidden = false;
+    btn.onclick = function(){
+      try {
+        var blob = new Blob([raw], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = '日常旧数据备份.json';
+        document.body.appendChild(a); a.click();
+        setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+      } catch (e) {}
+    };
+    document.getElementById('go').hidden = false;
+  }
+
+  if (!raw) { go(); return; }
+  try {
+    var obj = JSON.parse(raw);
+    if (!obj || !Array.isArray(obj.todos)) { go(); return; }
+    var bytes = new TextEncoder().encode(raw);
+    var bin = '';
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    var b64 = btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    window.name = 'DAILY_IMPORT:' + b64;
+    go();
+  } catch (e) {
+    fallback('自动迁移失败，请先下载备份，再在新地址里导入。');
+  }
+})();
+</script>
+</body>
+</html>

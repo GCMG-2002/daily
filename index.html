@@ -4,11 +4,26 @@
 <meta charset="utf-8" />
 <script>
 /* GitHub Pages 只作为入口：CloudBase 体验版不允许把 gcmg-2002.github.io 加进跨域白名单，
-   所以应用实际运行在 CloudBase 静态托管的默认域名（该域名已在白名单里，跨域可用）。 */
+   所以应用实际运行在 CloudBase 静态托管的默认域名（该域名已在白名单里，跨域可用）。
+   如果本机还有旧版数据，先走 migrate.html 自动迁移。 */
 (function(){
-  if (location.hostname === 'gcmg-2002.github.io') {
-    location.replace('https://daily-d1gmzocti21fcec0b-1512097170.tcloudbaseapp.com/' + location.search + location.hash);
-  }
+  if (location.hostname !== 'gcmg-2002.github.io') return;
+  var raw = null, moved = null, has = false;
+  try {
+    raw = localStorage.getItem('daybook.v2');
+    moved = localStorage.getItem('daily.migrated');
+    if (raw) {
+      var o = JSON.parse(raw);
+      has = !!(o && (
+        (o.todos && o.todos.length) || (o.holdings && o.holdings.length) ||
+        (o.journals && o.journals.length) || (o.tTrades && o.tTrades.length) ||
+        (o.readings && o.readings.length) || (o.thoughts && o.thoughts.length) ||
+        (o.expenses && o.expenses.length) ||
+        (o.account && (o.account.capital || o.account.pnl))
+      ));
+    }
+  } catch (e) {}
+  location.replace(((has && !moved) ? 'migrate.html' : 'https://daily-d1gmzocti21fcec0b-1512097170.tcloudbaseapp.com/') + location.search + location.hash);
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -2421,6 +2436,28 @@
   window.addEventListener('hashchange', route);
 
   /* ================= 启动 ================= */
+  /* 从 GitHub Pages 迁移旧数据：migrate.html 把备份放进 window.name，跨域跳转后仍可读 */
+  function importFromWindowName(){
+    var raw = '';
+    try { raw = String(window.name || ''); } catch (e) { return; }
+    var prefix = 'DAILY_IMPORT:';
+    if (raw.indexOf(prefix) !== 0) return;
+    try { window.name = ''; } catch (e) {}
+    try {
+      var b64 = raw.slice(prefix.length).replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      var bin = atob(b64);
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      var obj = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+      if (!obj || !Array.isArray(obj.todos)) return;
+      db = mergeDB(db, normalize(obj));
+      save(true);
+      render();
+      setTimeout(function(){ toast('已导入旧数据'); }, 600);
+    } catch (e) { console.warn('导入旧数据失败', e); }
+  }
+
   /* 控制台自检用：window.DAILY.info() 看同步状态，window.DAILY.db 看当前数据 */
   window.DAILY = {
     get db(){ return db; },
@@ -2434,6 +2471,7 @@
   };
 
   buildNav();
+  importFromWindowName();
   render();
   route();
   syncInit();
