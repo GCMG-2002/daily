@@ -226,6 +226,52 @@
   .seg{display:inline-flex;background:#e9ecf1;border-radius:11px;padding:3px;margin-bottom:14px}
   .seg button{padding:6px 20px;border-radius:9px;font-size:13px;color:#5c6672;transition:.15s}
   .seg button.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(17,22,28,.1)}
+  .top-actions{display:flex;align-items:center;gap:8px}
+
+  /* ---------- 消费 ---------- */
+  .spend-sum{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:2px 0 10px}
+  .spend-sum b{font-size:27px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .spend-sum span{font-size:12px;color:var(--muted)}
+  .spend-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer}
+  .spend-row:first-child{padding-top:2px}
+  .spend-row:last-child{border-bottom:0;padding-bottom:2px}
+  .spend-main{flex:1;min-width:0}
+  .spend-cat{font-size:14px;font-weight:600}
+  .spend-note{margin-top:2px;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .spend-amt{font-size:14.5px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .spend-bars{display:flex;flex-direction:column;gap:8px;margin-top:2px}
+  .spend-bar{display:grid;grid-template-columns:42px 1fr 70px;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+  .spend-bar .bar{height:6px}
+  .spend-bar b{font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums;text-align:right}
+
+  /* ---------- 语音 ---------- */
+  .voice-stage{display:flex;flex-direction:column;align-items:center;gap:10px;padding:6px 0 2px}
+  .voice-mic{
+    width:82px;height:82px;border-radius:50%;display:grid;place-items:center;
+    background:var(--accent);color:#fff;box-shadow:0 10px 26px -12px rgba(47,107,239,.85);
+    transition:transform .15s,background .15s;
+  }
+  .voice-mic svg{width:33px;height:33px}
+  .voice-mic:active{transform:scale(.94)}
+  .voice-mic.on{background:#e11d48;animation:voicering 1.7s ease-out infinite}
+  @keyframes voicering{
+    0%{box-shadow:0 0 0 0 rgba(225,29,72,.38)}
+    70%{box-shadow:0 0 0 20px rgba(225,29,72,0)}
+    100%{box-shadow:0 0 0 0 rgba(225,29,72,0)}
+  }
+  .voice-state{font-size:12.5px;color:var(--muted);min-height:18px;text-align:center}
+  .voice-text{
+    width:100%;min-height:104px;border-radius:13px;border:1px solid var(--line);
+    background:#fafbfc;padding:11px 13px;font-size:15px;line-height:1.65;outline:none;resize:vertical;
+  }
+  .voice-text:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(47,107,239,.11)}
+  .cat-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+  .cat-chips button{
+    padding:7px 14px;border-radius:99px;background:#f1f3f6;border:1px solid transparent;
+    font-size:12.5px;color:#4b5563;
+  }
+  .cat-chips button.on{background:var(--accent-soft);color:var(--accent);border-color:rgba(47,107,239,.3);font-weight:600}
+  .voice-tip{margin:6px 2px 0;font-size:11.5px;line-height:1.7;color:#9aa3b0}
 
   .acct-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
   .acct-grid .k{display:block;font-size:11.5px;color:var(--muted);white-space:nowrap}
@@ -475,6 +521,12 @@
     <div class="side-brand"><span class="brand-i">日</span>日常</div>
     <nav class="side-nav" id="sideNav"></nav>
     <div class="side-foot">
+      <button class="side-link" data-act="voice" style="width:100%">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="3" width="6" height="10.5" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0"/><path d="M12 18v3"/>
+        </svg>
+        <span>语音记一笔</span>
+      </button>
       <button class="side-link" data-act="settings" style="width:100%">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
           <path d="M4 7h9M17.5 7H20M4 17h2.5M11 17h9"/><circle cx="15" cy="7" r="2.1"/><circle cx="8.5" cy="17" r="2.1"/>
@@ -489,11 +541,18 @@
   <div class="shell">
     <header class="topbar">
       <div class="brand"><span class="brand-i">日</span>日常</div>
-      <button class="icon-btn" data-act="settings" aria-label="设置">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-          <path d="M4 7h9M17.5 7H20M4 17h2.5M11 17h9"/><circle cx="15" cy="7" r="2.1"/><circle cx="8.5" cy="17" r="2.1"/>
-        </svg>
-      </button>
+      <div class="top-actions">
+        <button class="icon-btn" data-act="voice" id="voiceBtn" aria-label="语音记录" title="语音记一笔">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="3" width="6" height="10.5" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0"/><path d="M12 18v3"/>
+          </svg>
+        </button>
+        <button class="icon-btn" data-act="settings" aria-label="设置">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M4 7h9M17.5 7H20M4 17h2.5M11 17h9"/><circle cx="15" cy="7" r="2.1"/><circle cx="8.5" cy="17" r="2.1"/>
+          </svg>
+        </button>
+      </div>
     </header>
 
     <main class="main">
@@ -546,6 +605,7 @@
         <div class="seg" id="stockSeg">
           <button data-act="sub" data-group="stock" data-sub="hold" class="on">持仓</button>
           <button data-act="sub" data-group="stock" data-sub="review">复盘</button>
+          <button data-act="sub" data-group="stock" data-sub="spend">消费</button>
         </div>
         <div id="stockBody"></div>
       </section>
@@ -591,7 +651,8 @@
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9.6V20a.5.5 0 0 0 .5.5h12a.5.5 0 0 0 .5-.5V9.6"/></svg>',
     work:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"><rect x="2.8" y="7.2" width="18.4" height="12.6" rx="2.6"/><path d="M8.4 7.2V5.9c0-1 .8-1.9 1.9-1.9h3.4c1 0 1.9.8 1.9 1.9v1.3"/><path d="M2.8 12.4h18.4"/></svg>',
     stock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"><path d="m3.2 17.4 6.3-6.4 3.9 3.9 7.2-7.6"/><path d="M15.4 7.3h5.7v5.7"/></svg>',
-    read:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"><path d="M4 4.8h6.2a2 2 0 0 1 2 2V20a1.5 1.5 0 0 0-1.5-1.5H4Z"/><path d="M20 4.8h-6.2a2 2 0 0 0-2 2V20a1.5 1.5 0 0 1 1.5-1.5H20Z"/></svg>'
+    read:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"><path d="M4 4.8h6.2a2 2 0 0 1 2 2V20a1.5 1.5 0 0 0-1.5-1.5H4Z"/><path d="M20 4.8h-6.2a2 2 0 0 0-2 2V20a1.5 1.5 0 0 1 1.5-1.5H20Z"/></svg>',
+    mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect x="9" y="3" width="6" height="10.5" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0"/><path d="M12 18v3"/></svg>'
   };
 
   /* ================= 工具 ================= */
@@ -647,11 +708,11 @@
 
   /* ================= 数据 ================= */
   function blank(){
-    return { v:2, todos:[], account:{capital:0, pnl:0, u:0}, holdings:[], journals:[], tTrades:[], readings:[], thoughts:[], deleted:{} };
+    return { v:2, todos:[], account:{capital:0, pnl:0, u:0}, holdings:[], journals:[], tTrades:[], readings:[], thoughts:[], expenses:[], deleted:{} };
   }
   function normalize(o){
     var d = blank();
-    ['todos','holdings','journals','tTrades','readings','thoughts'].forEach(function(k){
+    ['todos','holdings','journals','tTrades','readings','thoughts','expenses'].forEach(function(k){
       if (Array.isArray(o[k])) d[k] = o[k];
     });
     if (o.deleted && typeof o.deleted === 'object' && !Array.isArray(o.deleted)) d.deleted = o.deleted;
@@ -662,6 +723,7 @@
     d.tTrades.forEach(function(x){ x.id = x.id || uid(); });
     d.readings.forEach(function(r){ r.id = r.id || uid(); });
     d.thoughts.forEach(function(x){ x.id = x.id || uid(); x.date = x.date || today(); });
+    d.expenses.forEach(function(x){ x.id = x.id || uid(); x.date = x.date || today(); x.amount = num(x.amount); x.cat = x.cat || '其他'; });
     return d;
   }
   function load(){
@@ -689,7 +751,7 @@
   }
 
   /* ================= 同步 ================= */
-  var SYNC = { on:false, rev:0, last:0, busy:false, dirty:false, error:'', queued:false };
+  var SYNC = { on:false, rev:0, last:0, busy:false, dirty:false, error:'', queued:false, starting:false, wired:false, detail:'' };
   var syncTimer = null;
 
   function scheduleSync(){
@@ -722,7 +784,7 @@
   function mergeDB(local, remote){
     if (!remote) return local;
     var out = blank();
-    ['todos','holdings','journals','tTrades','readings','thoughts'].forEach(function(k){
+    ['todos','holdings','journals','tTrades','readings','thoughts','expenses'].forEach(function(k){
       out[k] = mergeList(local[k], remote[k]);
     });
 
@@ -742,7 +804,7 @@
       if (!src) return;
       Object.keys(src).forEach(function(k){ dels[k] = Math.max(dels[k] || 0, src[k]); });
     });
-    ['todos','holdings','journals','tTrades','readings','thoughts'].forEach(function(k){
+    ['todos','holdings','journals','tTrades','readings','thoughts','expenses'].forEach(function(k){
       out[k] = out[k].filter(function(it){
         var key = k + ':' + it.id;
         return !(dels[key] && dels[key] >= stamp(it));
@@ -755,7 +817,7 @@
   /* 合并后本地是否有比服务器更新的内容（离线期间改过的数据，需要补传） */
   function localAhead(merged, remote){
     if (!remote) return true;
-    var keys = ['todos','holdings','journals','tTrades','readings','thoughts'];
+    var keys = ['todos','holdings','journals','tTrades','readings','thoughts','expenses'];
     for (var i = 0; i < keys.length; i++) {
       var k = keys[i], rmap = {};
       (remote[k] || []).forEach(function(x){ rmap[x.id] = x; });
@@ -770,40 +832,143 @@
 
   function hasAnyData(d){
     return !!(d.todos.length || d.holdings.length || d.journals.length || d.tTrades.length ||
-      d.readings.length || d.thoughts.length || num(d.account.capital) || num(d.account.pnl));
+      d.readings.length || d.thoughts.length || d.expenses.length || num(d.account.capital) || num(d.account.pnl));
   }
 
-  /* ================= 云端同步（Supabase） ================= */
+  /* ================= 云端同步（腾讯云开发 CloudBase） ================= */
   var CFG = (window.DAILY_CONFIG || {});
   var CLOUD = {
-    ready: !!(CFG.supabaseUrl && CFG.anonKey && CFG.space),
-    url: String(CFG.supabaseUrl || '').replace(/\/+$/, ''),
-    key: CFG.anonKey || '',
-    space: CFG.space || ''
+    ready: !!(CFG.cloudbaseEnv && CFG.accessKey && CFG.space),
+    env: CFG.cloudbaseEnv || '',
+    region: CFG.cloudbaseRegion || 'ap-shanghai',
+    key: CFG.accessKey || '',
+    space: CFG.space || '',
+    table: CFG.table || 'states'
   };
 
-  async function rpc(fn, body){
-    var headers = {
-      'Content-Type': 'application/json',
-      'apikey': CLOUD.key
-    };
-    /* 新版 publishable key 不是 JWT，只放 apikey；旧版 anon JWT 两个头都带 */
-    if (/^eyJ/.test(CLOUD.key)) headers['Authorization'] = 'Bearer ' + CLOUD.key;
-    var res = await fetch(CLOUD.url + '/rest/v1/rpc/' + fn, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify(body)
+  var cbApp = null, cbDb = null, cbLoading = null;
+
+  /* 把 space 稳定地映射成一个 UUID：手机和电脑填同一个 space，就会读写同一行 */
+  function spaceUuid(space){
+    var s = String(space || 'daily');
+    var h = [0x811c9dc5, 0x1b873593, 0x85ebca6b, 0xc2b2ae35];
+    var mul = [16777619, 0xcc9e2d51, 0x27d4eb2f, 0x165667b1];
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charCodeAt(i);
+      for (var j = 0; j < 4; j++) {
+        h[j] ^= c;
+        h[j] = Math.imul(h[j], mul[j]) >>> 0;
+        h[j] = (h[j] ^ (h[j] >>> 13)) >>> 0;
+      }
+    }
+    var hex = h.map(function(x){ return ('00000000' + x.toString(16)).slice(-8); }).join('');
+    var variant = ((parseInt(hex.charAt(16), 16) & 3) | 8).toString(16);
+    return hex.slice(0, 8) + '-' + hex.slice(8, 12) + '-5' + hex.slice(13, 16) + '-' +
+      variant + hex.slice(17, 20) + '-' + hex.slice(20, 32);
+  }
+  var ROW_ID = CLOUD.ready ? spaceUuid(CLOUD.space) : '';
+
+  /* SDK 体积较大：等首页先渲染出来，再按需加载 */
+  function ensureCloudbase(){
+    if (window.cloudbase) return Promise.resolve(window.cloudbase);
+    if (cbLoading) return cbLoading;
+    cbLoading = new Promise(function(resolve, reject){
+      var s = document.createElement('script');
+      s.src = 'vendor-cloudbase.js';
+      s.async = true;
+      s.onload = function(){
+        if (window.cloudbase) { resolve(window.cloudbase); return; }
+        cbLoading = null;
+        reject(new Error('SDK 初始化失败'));
+      };
+      s.onerror = function(){
+        cbLoading = null;
+        if (s.parentNode) s.parentNode.removeChild(s);
+        reject(new Error('SDK 加载失败'));
+      };
+      document.head.appendChild(s);
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    return res.json();
+    return cbLoading;
+  }
+
+  function cloudDb(){
+    if (cbDb) return cbDb;
+    cbApp = window.cloudbase.init({
+      env: CLOUD.env,
+      region: CLOUD.region,
+      accessKey: CLOUD.key,
+      timeout: 15000
+    });
+    cbDb = cbApp.rdb();
+    return cbDb;
+  }
+
+  function dbError(r, fallback){
+    var e = (r && r.error) || {};
+    var err = new Error(e.message || fallback || '云端请求失败');
+    err.code = e.code || '';
+    err.status = (r && r.status) || 0;
+    return err;
+  }
+
+  function syncErrorText(e){
+    var msg = String((e && e.message) || '');
+    if ((e && e.status) === 401 || /42501|permission denied/i.test(msg)) return '云端无访问权限';
+    if (/SDK/.test(msg)) return '云端组件加载失败';
+    return '云端连接失败';
+  }
+
+  function parseRow(row){
+    if (!row) return null;
+    var data = row.data;
+    if (typeof data === 'string') { try { data = JSON.parse(data); } catch (e) { data = null; } }
+    if (!data) return null;
+    return { rev: Number(row.rev) || 0, data: data };
   }
 
   async function cloudLoad(){
-    return rpc('space_load', { p_id: CLOUD.space });
+    var r = await cloudDb().from(CLOUD.table).select('*').eq('id', ROW_ID).limit(1);
+    if (r.error) throw dbError(r, '读取云端数据失败');
+    return parseRow(r.data && r.data[0]);
   }
 
+  /* 乐观锁：只有 rev 仍是 baseRev 时才写入；冲突就把服务器那份交回给 mergeDB */
   async function cloudSave(baseRev, data){
-    return rpc('space_save', { p_id: CLOUD.space, p_base_rev: baseRev, p_data: data });
+    var rdb = cloudDb();
+    var now = new Date().toISOString();
+
+    if (!baseRev) {
+      var ins = await rdb.from(CLOUD.table).insert({ id: ROW_ID, rev: 1, data: data, updated_at: now });
+      if (!ins.error) return { ok: true, rev: 1 };
+      var txt = String(((ins.error && ins.error.code) || '') + ' ' + ((ins.error && ins.error.message) || ''));
+      if (!/23505|duplicate|already exists/i.test(txt)) throw dbError(ins, '创建云端数据失败');
+      var cur = await cloudLoad();
+      if (!cur) throw dbError(ins, '创建云端数据失败');
+      return { conflict: true, rev: cur.rev, data: cur.data };
+    }
+
+    var nextRev = baseRev + 1;
+    var upd = await rdb.from(CLOUD.table)
+      .update({ rev: nextRev, data: data, updated_at: now })
+      .eq('id', ROW_ID).eq('rev', baseRev).select('rev');
+
+    if (upd.error) {
+      /* 少数网关版本不支持 update 后 select：退回“写一次再读回来核对” */
+      var retry = await rdb.from(CLOUD.table)
+        .update({ rev: nextRev, data: data, updated_at: now })
+        .eq('id', ROW_ID).eq('rev', baseRev);
+      if (retry.error) throw dbError(retry, '写入云端失败');
+      var check = await cloudLoad();
+      if (!check) return { conflict: true, rev: 0, data: null };
+      if (check.rev === nextRev && JSON.stringify(check.data) === JSON.stringify(data)) return { ok: true, rev: nextRev };
+      return { conflict: true, rev: check.rev, data: check.data };
+    }
+
+    var rows = upd.data || [];
+    if (rows.length) return { ok: true, rev: Number(rows[0].rev) || nextRev };
+    var fresh = await cloudLoad();
+    if (!fresh) return { conflict: true, rev: 0, data: null };
+    return { conflict: true, rev: fresh.rev, data: fresh.data };
   }
 
   async function syncPull(){
@@ -825,9 +990,11 @@
         if (ahead) { SYNC.dirty = true; syncPush(); }
       }
       SYNC.error = '';
+      SYNC.detail = '';
       if (SYNC.dirty) syncPush();
     } catch (e) {
-      SYNC.error = '云端连接失败';
+      SYNC.error = syncErrorText(e);
+      SYNC.detail = String((e && e.message) || '');
     }
     updateSyncUI();
   }
@@ -845,6 +1012,7 @@
           SYNC.last = Date.now();
           SYNC.dirty = false;
           SYNC.error = '';
+          SYNC.detail = '';
           break;
         }
         if (r && r.conflict) {
@@ -857,7 +1025,8 @@
         throw new Error('bad response');
       }
     } catch (e) {
-      SYNC.error = '同步失败，稍后重试';
+      SYNC.error = syncErrorText(e);
+      SYNC.detail = String((e && e.message) || '');
     }
     SYNC.busy = false;
     updateSyncUI();
@@ -866,7 +1035,11 @@
 
   async function syncNow(){
     if (!CLOUD.ready) { toast('还没有配置云端，先看使用说明'); return; }
-    if (!SYNC.on) { toast('正在连接云端…'); return; }
+    if (!SYNC.on) {
+      toast('正在连接云端…');
+      await syncInit();
+    }
+    if (!SYNC.on) { toast(SYNC.error || '连接云端失败'); return; }
     await syncPull();
     if (SYNC.dirty) await syncPush();
     updateSyncUI();
@@ -875,10 +1048,16 @@
 
   async function syncInit(){
     if (!CLOUD.ready) { updateSyncUI(); return; }
+    if (SYNC.starting) return;
+    SYNC.starting = true;
+    SYNC.error = '';
+    SYNC.detail = '';
+    updateSyncUI();
     try {
+      await ensureCloudbase();
       var j = await cloudLoad();
       SYNC.on = true;
-      SYNC.rev = (j && j.rev) || 0;
+      SYNC.rev = j ? j.rev : 0;
       if (j && j.data) {
         var merged = mergeDB(db, j.data);
         var ahead = localAhead(merged, j.data);
@@ -892,15 +1071,23 @@
         syncPush();
       }
       updateSyncUI();
-      setInterval(syncPull, 8000);
-      document.addEventListener('visibilitychange', function(){ if (!document.hidden) syncPull(); });
-      window.addEventListener('focus', function(){ syncPull(); });
-      window.addEventListener('online', function(){ syncPull(); });
+      if (!SYNC.wired) {
+        SYNC.wired = true;
+        setInterval(syncPull, 8000);
+        document.addEventListener('visibilitychange', function(){
+          if (document.hidden) return;
+          if (SYNC.on) syncPull(); else syncInit();
+        });
+        window.addEventListener('focus', function(){ if (SYNC.on) syncPull(); else syncInit(); });
+        window.addEventListener('online', function(){ if (SYNC.on) syncPull(); else syncInit(); });
+      }
     } catch (e) {
       SYNC.on = false;
-      SYNC.error = '连接云端失败';
+      SYNC.error = syncErrorText(e);
+      SYNC.detail = String((e && e.message) || '');
       updateSyncUI();
     }
+    SYNC.starting = false;
   }
 
   function hm(ts){ var d = new Date(ts); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
@@ -908,7 +1095,10 @@
   function updateSyncUI(){
     var status, cls;
     if (!CLOUD.ready) { status = '仅本机保存（未配置云端）'; cls = 'off'; }
-    else if (!SYNC.on) { status = SYNC.error || '连接云端…'; cls = SYNC.error ? 'bad' : 'run'; }
+    else if (!SYNC.on) {
+      status = SYNC.starting ? '连接云端…' : (SYNC.error || '连接云端…');
+      cls = SYNC.starting ? 'run' : (SYNC.error ? 'bad' : 'run');
+    }
     else if (SYNC.busy) { status = '同步中…'; cls = 'run'; }
     else if (SYNC.error) { status = SYNC.error; cls = 'bad'; }
     else if (SYNC.last) { status = '已同步 ' + hm(SYNC.last); cls = 'ok'; }
@@ -1074,9 +1264,12 @@
     if (state.stockSub === 'hold') {
       $('#stockAddBtn').innerHTML = '＋ 添加持仓';
       renderHoldings();
-    } else {
+    } else if (state.stockSub === 'review') {
       $('#stockAddBtn').innerHTML = '＋ 写复盘';
       renderReview();
+    } else {
+      $('#stockAddBtn').innerHTML = '＋ 记一笔';
+      renderSpend();
     }
   }
 
@@ -1123,8 +1316,54 @@
       '</div>';
   }
 
-  function renderReview(){
-    $('#stockSub').textContent = '记录每天的大盘、做 T 和计划';
+  function renderSpend(){
+    var t = today(), month = t.slice(0, 7);
+    var list = db.expenses.slice().sort(function(a, b){ return String(b.date).localeCompare(String(a.date)) || (b.ts || 0) - (a.ts || 0); });
+    var mlist = list.filter(function(x){ return String(x.date).slice(0, 7) === month; });
+    var total = mlist.reduce(function(s, x){ return s + num(x.amount); }, 0);
+    var day = new Date().getDate();
+    $('#stockSub').textContent = list.length ? ('本月 ' + mlist.length + ' 笔 · 共 ¥' + money(total)) : '还没有消费记录';
+
+    if (!list.length) {
+      $('#stockBody').innerHTML = '<div class="card empty"><p class="empty-t">还没有消费记录</p>' +
+        '<p class="empty-s">记下每天的花销，月底自动汇总</p>' +
+        '<button class="btn-ghost" data-act="new-expense">' + ICON.plus + '记第一笔</button></div>';
+      return;
+    }
+
+    var byCat = {}, cats;
+    mlist.forEach(function(x){ var k = x.cat || '其他'; byCat[k] = (byCat[k] || 0) + num(x.amount); });
+    cats = Object.keys(byCat).sort(function(a, b){ return byCat[b] - byCat[a]; }).slice(0, 5);
+    var max = cats.length ? byCat[cats[0]] : 0;
+    var bars = cats.map(function(k){
+      var v = byCat[k], p = max ? Math.round(v / max * 100) : 0;
+      return '<div class="spend-bar"><span>' + esc(k) + '</span><div class="bar"><i style="width:' + p + '%"></i></div><b>¥' + money(v) + '</b></div>';
+    }).join('') || '<p class="hint-text">这个月还没有花销。</p>';
+
+    var rows = list.slice(0, 60).map(function(x){
+      var isToday = x.date === t;
+      return '<div class="spend-row" data-act="edit-expense" data-id="' + x.id + '">' +
+        '<div class="spend-main"><div class="spend-cat">' + esc(x.cat || '其他') +
+          '<span class="hcode">' + (isToday ? '今天' : shortLabel(x.date)) + '</span></div>' +
+          (x.note ? '<div class="spend-note">' + esc(x.note) + '</div>' : '') + '</div>' +
+        '<span class="spend-amt">¥' + money(num(x.amount)) + '</span></div>';
+    }).join('');
+
+    $('#stockBody').innerHTML =
+      '<div class="narrow">' +
+        '<div class="card" style="margin-bottom:14px">' +
+          '<div class="card-head"><h2>本月消费</h2><span class="card-meta">' + mlist.length + ' 笔</span></div>' +
+          '<div class="spend-sum"><b>¥' + money(total) + '</b><span>日均 ¥' + money(day > 0 ? total / day : 0) + '</span></div>' +
+          '<div class="spend-bars">' + bars + '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-head"><h2>最近记录</h2><button class="card-link" data-act="new-expense">＋ 记一笔</button></div>' +
+          rows +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderReview(){    $('#stockSub').textContent = '记录每天的大盘、做 T 和计划';
     $('#stockBody').innerHTML = renderReviewCards();
   }
 
@@ -1283,6 +1522,7 @@
     document.body.classList.add('locked');
   }
   function closeSheet(){
+    if (typeof VOICE !== 'undefined' && VOICE) stopVoiceNow();
     $('#sheet').classList.remove('on');
     $('#backdrop').classList.remove('on');
     document.body.classList.remove('locked');
@@ -1300,9 +1540,9 @@
   }
 
   /* ---------------- 待办 ---------------- */
-  function todoSheet(item){
+  function todoSheet(item, prefill){
     state.sheet = 'todo'; state.editing = item || null;
-    var t = item || { title:'', time:'', place:'', way:'', progress:0 };
+    var t = item || Object.assign({ title:'', time:'', place:'', way:'', progress:0 }, prefill || {});
     var p = clamp(t.progress, 0, 100);
     openSheet(
       sheetHead(item ? '编辑待办' : '新建待办') +
@@ -1381,9 +1621,9 @@
   }
 
   /* ---------------- 持仓 ---------------- */
-  function holdSheet(item){
+  function holdSheet(item, prefill){
     state.sheet = 'hold'; state.editing = item || null;
-    var h = item || { name:'', code:'', cost:'', price:'' };
+    var h = item || Object.assign({ name:'', code:'', cost:'', price:'' }, prefill || {});
     openSheet(
       sheetHead(item ? '编辑持仓' : '添加持仓') +
       '<div class="sheet-body">' +
@@ -1422,10 +1662,49 @@
     toast(editing ? '已保存' : '已添加持仓');
   }
 
+  /* ---------------- 消费 ---------------- */
+  var EXPENSE_CATS = ['餐饮','交通','购物','居住','娱乐','医疗','其他'];
+
+  function expenseSheet(item, prefill){
+    state.sheet = 'expense'; state.editing = item || null;
+    var x = item || Object.assign({ date: today(), amount:'', cat:'餐饮', note:'' }, prefill || {});
+    var cat = x.cat || '其他';
+    openSheet(
+      sheetHead(item ? '编辑消费' : '记一笔消费') +
+      '<div class="sheet-body">' +
+        '<div class="two">' +
+          field('金额（元）', '<input id="fAmt" class="input" inputmode="decimal" placeholder="0.00" value="' + (x.amount === '' || x.amount == null ? '' : x.amount) + '">') +
+          field('日期', '<input id="fDate" class="input" type="date" value="' + esc(x.date || today()) + '">') +
+        '</div>' +
+        field('类别', '<input id="fCat" class="input" maxlength="10" placeholder="餐饮 / 交通 / 购物…" value="' + esc(cat) + '">' +
+          '<div class="chips" id="catChips">' + EXPENSE_CATS.map(function(c){
+            return '<button type="button" data-act="expense-cat" data-cat="' + c + '"' + (c === cat ? ' class="on"' : '') + '>' + c + '</button>';
+          }).join('') + '</div>') +
+        field('备注', '<input id="fNote" class="input" maxlength="60" placeholder="买了什么" value="' + esc(x.note || '') + '">') +
+      '</div>' +
+      sheetFoot({ act:'save-expense', text: item ? '保存修改' : '保存' }, item ? '删除这笔' : '', 'del-expense')
+    );
+  }
+  function saveExpense(){
+    var amount = Math.max(0, num($('#fAmt').value));
+    if (!amount) { toast('请填写金额'); $('#fAmt').focus(); return; }
+    var data = {
+      date: $('#fDate').value || today(),
+      amount: Math.round(amount * 100) / 100,
+      cat: $('#fCat').value.trim() || '其他',
+      note: $('#fNote').value.trim()
+    };
+    var editing = state.editing;
+    if (editing) { Object.assign(editing, data); editing.u = Date.now(); }
+    else db.expenses.unshift(Object.assign({ id: uid(), ts: Date.now(), u: Date.now() }, data));
+    save(); closeSheet(); render();
+    toast(editing ? '已保存' : '已记一笔消费');
+  }
+
   /* ---------------- 复盘 ---------------- */
-  function journalSheet(date){
+  function journalSheet(date, prefill){
     state.sheet = 'journal'; state.editing = null;
-    var j = getJournal(date) || { date: date, market:'', summary:'', rules:'', plan:'' };
+    var j = Object.assign({ date: date, market:'', summary:'', rules:'', plan:'' }, getJournal(date) || {}, prefill || {});
     openSheet(
       sheetHead('写复盘') +
       '<div class="sheet-body">' +
@@ -1464,9 +1743,9 @@
   }
 
   /* ---------------- 做 T ---------------- */
-  function ttradeSheet(item){
+  function ttradeSheet(item, prefill){
     state.sheet = 'ttrade'; state.editing = item || null;
-    var x = item || { date: today(), stock:'', pnl:'', note:'' };
+    var x = item || Object.assign({ date: today(), stock:'', pnl:'', note:'' }, prefill || {});
     openSheet(
       sheetHead(item ? '编辑做 T' : '记一笔做 T') +
       '<div class="sheet-body">' +
@@ -1497,9 +1776,9 @@
   }
 
   /* ---------------- 阅读 ---------------- */
-  function readSheet(item){
+  function readSheet(item, prefill){
     state.sheet = 'read'; state.editing = item || null;
-    var r = item || { date: today(), book:'', author:'', pages:'', quotes:'', insight:'' };
+    var r = item || Object.assign({ date: today(), book:'', author:'', pages:'', quotes:'', insight:'' }, prefill || {});
     openSheet(
       sheetHead(item ? '编辑读书' : '记读书') +
       '<div class="sheet-body">' +
@@ -1536,9 +1815,9 @@
   }
 
   /* ---------------- 感悟 ---------------- */
-  function thoughtSheet(item){
+  function thoughtSheet(item, prefill){
     state.sheet = 'thought'; state.editing = item || null;
-    var x = item || { date: today(), text:'' };
+    var x = item || Object.assign({ date: today(), text:'' }, prefill || {});
     openSheet(
       sheetHead(item ? '编辑感悟' : '写感悟') +
       '<div class="sheet-body">' +
@@ -1568,6 +1847,277 @@
     var again = $('#thinkInput'); if (again) again.focus();
   }
 
+  /* ================= 语音记录 ================= */
+  var VOICE_CATS = [
+    { id:'todo', label:'待办' },
+    { id:'expense', label:'消费' },
+    { id:'stock', label:'股票' },
+    { id:'read', label:'阅读' },
+    { id:'mood', label:'心情' }
+  ];
+  var VOICE = { rec:null, listening:false, text:'', cat:'', picked:false, dead:false };
+
+  function voiceSupported(){
+    return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  }
+  function voiceCatLabel(id){
+    for (var i = 0; i < VOICE_CATS.length; i++) if (VOICE_CATS[i].id === id) return VOICE_CATS[i].label;
+    return '';
+  }
+  function voiceChips(sel){
+    return VOICE_CATS.map(function(c){
+      return '<button type="button" data-act="voice-cat" data-cat="' + c.id + '"' + (c.id === sel ? ' class="on"' : '') + '>' + c.label + '</button>';
+    }).join('');
+  }
+
+  /* ---------- 关键词分类 ---------- */
+  function classifyVoice(text){
+    var t = String(text || '');
+    if (/股票|持仓|买入|卖出|加仓|减仓|做\s*T|做T|大盘|指数|涨停|跌停|仓位|成本价|现价|盈亏|收盘|A股|港股|基金|可转债|茅台|宁德|比亚迪|腾讯|英伟达|特斯拉/.test(t)) return 'stock';
+    if (/读书|看书|读到|读了|第\s*\d+\s*页|\d+\s*页|书名|作者|章节|阅读|摘抄|金句|这本书|读完/.test(t)) return 'read';
+    if (/(花了?|付款|付了?|消费|支出|账单|打车|外卖|咖啡|奶茶|吃饭|吃了|喝了|超市|购物|房租|话费|电影票|买了?|缴费|加油)/.test(t)) return 'expense';
+    if (/(心情|感觉|觉得|开心|难过|焦虑|郁闷|烦躁|压力|情绪|感悟|想到|反思|很累|太累|累了)/.test(t) &&
+        !/(提醒|待办|开会|提交|完成|回复|安排|记得)/.test(t)) return 'mood';
+    if (/(待办|提醒|记得|需要|要做|开会|会议|回电话|回复|提交|完成|处理|安排|约|明天|后天|今天|上午|下午|晚上)/.test(t)) return 'todo';
+    return 'mood';
+  }
+
+  /* ---------- 语音内容 → 表单字段 ---------- */
+  function parseVoiceAmount(t){
+    var m = t.match(/(?:¥|￥)\s*(\d+(?:\.\d+)?)/) ||
+      t.match(/(\d+(?:\.\d+)?)\s*(?:元|块钱|块|rmb)/i) ||
+      t.match(/(?:花了?|付了?|付款|消费|支出|用了?)\s*(\d+(?:\.\d+)?)/);
+    return m ? Math.abs(num(m[1])) : 0;
+  }
+  function parseVoicePages(t){
+    var m = t.match(/(\d+)\s*页/) || t.match(/第\s*(\d+)\s*页/);
+    return m ? Math.round(num(m[1])) : '';
+  }
+  function parseBookName(t){
+    var m = t.match(/《([^》]{1,40})》/);
+    if (m) return m[1];
+    m = t.match(/(?:在读|读了|看完|读完)\s*([^\s，。！？]{2,20})/);
+    return m ? m[1] : '';
+  }
+  function guessExpenseCat(t){
+    if (/吃|饭|餐|咖啡|奶茶|外卖|火锅|烧烤|零食|水果|饿了么|美团/.test(t)) return '餐饮';
+    if (/打车|滴滴|地铁|公交|高铁|火车|机票|加油|停车|过路费|单车/.test(t)) return '交通';
+    if (/房租|水费|电费|燃气|物业|宽带|话费|手机费/.test(t)) return '居住';
+    if (/电影|游戏|演出|门票|健身|唱歌|KTV|旅游/.test(t)) return '娱乐';
+    if (/医院|药|体检|挂号|看病/.test(t)) return '医疗';
+    if (/买|购|淘宝|京东|拼多多|超市|衣服|鞋|包|日用品/.test(t)) return '购物';
+    return '其他';
+  }
+  function guessStockName(t){
+    var m = t.match(/(?:买了|买入|卖出|持有|加仓|减仓)\s*([\u4e00-\u9fa5A-Za-z0-9]{2,10})/);
+    if (!m) return '';
+    return m[1].replace(/(赚了|亏了|赚钱|亏损|涨停|跌停|元|块|了).*$/, '');
+  }
+  function parseVoicePnl(t){
+    var neg = /(亏|亏损|赔)/.test(t);
+    var m = t.match(/(?:赚了?|盈利|赚|亏了?|亏损|赔了?)\s*(\d+(?:\.\d+)?)/);
+    if (m) return (neg ? -1 : 1) * num(m[1]);
+    m = t.match(/([+\-−]?\d+(?:\.\d+)?)\s*(?:元|块)/);
+    return m ? num(m[1].replace('−', '-')) : 0;
+  }
+  function cnNum(s){
+    var map = { '零':0, '〇':0, '一':1, '二':2, '两':2, '三':3, '四':4, '五':5, '六':6, '七':7, '八':8, '九':9 };
+    if (/^\d+$/.test(s)) return +s;
+    if (s === '十') return 10;
+    if (s.length === 1) return map[s] === undefined ? null : map[s];
+    if (s.charAt(0) === '十') return 10 + (map[s.charAt(1)] || 0);
+    if (s.charAt(1) === '十') return (map[s.charAt(0)] || 0) * 10 + (map[s.charAt(2)] || 0);
+    return null;
+  }
+  var CN_NUM = '[0-9零〇一二两三四五六七八九十]';
+  function voiceTodoTime(text){
+    var now = new Date();
+    var dayOff = null;
+    if (/大后天/.test(text)) dayOff = 3;
+    else if (/后天/.test(text)) dayOff = 2;
+    else if (/明天|明日/.test(text)) dayOff = 1;
+    else if (/今天|今日|今晚/.test(text)) dayOff = 0;
+    var hh = null, mm = 0;
+    var colon = text.match(/(\d{1,2})[:：](\d{2})/);
+    var tm = text.match(new RegExp('(' + CN_NUM + '{1,3})\\s*[点时](?:\\s*(' + CN_NUM + '{1,3})\\s*分?|半)?'));
+    if (colon) { hh = +colon[1]; mm = +colon[2]; }
+    else if (tm) {
+      hh = cnNum(tm[1]);
+      mm = tm[2] ? cnNum(tm[2]) : (/半/.test(tm[0]) ? 30 : 0);
+      if (/(下午|晚上|傍晚|今晚|夜里)/.test(text) && hh < 12) hh += 12;
+      else if (/中午/.test(text) && hh < 11) hh += 12;
+    }
+    if (dayOff === null && hh === null) return '';
+    if (dayOff === null) {
+      dayOff = 0;
+      if (hh !== null) {
+        var probe = new Date(); probe.setHours(hh, mm, 0, 0);
+        if (probe.getTime() < now.getTime() - 60000) dayOff = 1;
+      }
+    }
+    var d = new Date(now.getTime());
+    d.setDate(d.getDate() + dayOff);
+    if (hh === null) { hh = 9; mm = 0; }
+    d.setHours(hh, mm, 0, 0);
+    return ymd(d) + 'T' + pad(hh) + ':' + pad(mm);
+  }
+  function voiceTodoTitle(text){
+    var s = String(text || '').trim();
+    s = s.replace(/^(帮我|请|麻烦|给我)?\s*(记一下|记一笔|记录一下|记录|提醒我|提醒|记得|我要|我需要|需要|要)\s*/, '');
+    s = s.replace(new RegExp('(大后天|后天|明天|明日|今天|今日|今晚|早上|上午|中午|下午|晚上|傍晚|凌晨)?\\s*' + CN_NUM + '{1,3}\\s*[点时](?:\\s*' + CN_NUM + '{1,3}\\s*分?|半)?', 'g'), '');
+    s = s.replace(/\d{1,2}[:：]\d{2}/g, '');
+    s = s.replace(/^(大后天|后天|明天|明日|今天|今日|今晚)\s*/, '');
+    s = s.replace(/^(要|需要|得)\s*/, '');
+    s = s.replace(/^[，,。.、；;\s]+|[，,。.、；;\s]+$/g, '');
+    return s || String(text).trim();
+  }
+  function voiceWay(t){
+    if (/电话/.test(t)) return '电话';
+    if (/微信/.test(t)) return '微信';
+    if (/当面|见面/.test(t)) return '当面';
+    if (/线上|视频|腾讯会议|钉钉/.test(t)) return '线上';
+    return '';
+  }
+
+  /* ---------- 面板 ---------- */
+  function voiceSheet(){
+    state.sheet = 'voice'; state.editing = null;
+    VOICE.text = ''; VOICE.cat = ''; VOICE.picked = false; VOICE.dead = false;
+    var supported = voiceSupported();
+    openSheet(
+      sheetHead('语音记一笔') +
+      '<div class="sheet-body">' +
+        '<div class="voice-stage">' +
+          '<button class="voice-mic" data-act="voice-toggle" id="voiceMic" aria-label="开始或停止说话">' + ICON.mic + '</button>' +
+          '<div class="voice-state" id="voiceState">' + (supported ? '点一下开始说话' : '当前浏览器不支持语音识别') + '</div>' +
+        '</div>' +
+        '<div class="field"><label class="label">说的内容 <b id="voiceCatLabel"></b></label>' +
+          '<textarea id="voiceText" class="voice-text" placeholder="' + (supported ? '说完会自动变成文字，识别错了可以直接改' : '直接输入内容，分类和预填表单照样能用') + '"></textarea>' +
+        '</div>' +
+        '<div class="field"><label class="label">分类</label><div class="cat-chips" id="voiceCats">' + voiceChips('') + '</div></div>' +
+        '<p class="voice-tip">' + (supported
+          ? '手机 Chrome / Edge / Safari 可用，第一次会请求麦克风权限。说「明天下午三点开会」「买咖啡花了 18 块」「读了 30 页书」这种一句话就行。'
+          : '这个浏览器没有语音接口：直接打字，选个分类，一样会预填表单。') + '</p>' +
+      '</div>' +
+      '<div class="sheet-foot"><button class="btn-primary" data-act="voice-fill">填入表单</button></div>'
+    );
+    if (supported) startVoice();
+  }
+
+  function voiceState(msg, listening){
+    var el = $('#voiceState');
+    if (el) el.textContent = msg || (listening ? '正在听… 说完再点一下' : '点一下开始说话');
+    var mic = $('#voiceMic');
+    if (mic) mic.classList.toggle('on', !!listening);
+  }
+  function autoClassifyVoice(text){
+    if (!text) return;
+    var cat = classifyVoice(text);
+    VOICE.cat = cat;
+    var box = $('#voiceCats');
+    if (box) box.innerHTML = voiceChips(cat);
+    var lab = $('#voiceCatLabel');
+    if (lab) lab.textContent = '· ' + voiceCatLabel(cat);
+  }
+  function startVoice(){
+    if (!voiceSupported()) { toast('当前浏览器不支持语音，可以直接打字'); return; }
+    if (VOICE.listening) { stopVoice(); return; }
+    var Ctor = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var rec = new Ctor();
+    var finalText = (($('#voiceText') && $('#voiceText').value) || '').trim();
+    VOICE.dead = false;
+    rec.lang = 'zh-CN';
+    rec.interimResults = true;
+    rec.continuous = false;
+    rec.maxAlternatives = 1;
+    rec.onstart = function(){
+      VOICE.listening = true;
+      voiceState('正在听… 说完再点一下', true);
+    };
+    rec.onresult = function(ev){
+      var interim = '';
+      for (var i = ev.resultIndex; i < ev.results.length; i++) {
+        var txt = ev.results[i][0].transcript;
+        if (ev.results[i].isFinal) finalText += txt;
+        else interim += txt;
+      }
+      var ta = $('#voiceText');
+      if (ta) ta.value = (finalText + interim).replace(/^\s+/, '');
+      VOICE.text = ta ? ta.value : finalText;
+      if (interim) voiceState('正在听… ' + interim.slice(-18), true);
+    };
+    rec.onerror = function(ev){
+      VOICE.listening = false;
+      var msg = ev.error === 'not-allowed' || ev.error === 'service-not-allowed' ? '麦克风没有权限，请在浏览器里允许后重试' :
+        ev.error === 'no-speech' ? '没听到声音，再点一下试试' :
+        ev.error === 'network' ? '语音服务连接失败，可以直接打字' : '语音识别失败，可以直接打字';
+      voiceState(msg, false);
+    };
+    rec.onend = function(){
+      VOICE.listening = false;
+      VOICE.rec = null;
+      if (VOICE.dead) return;
+      voiceState('', false);
+      var ta = $('#voiceText');
+      if (ta) VOICE.text = ta.value.trim();
+      if (VOICE.text) {
+        if (!VOICE.picked) autoClassifyVoice(VOICE.text);
+        voiceState('识别完成，确认分类后填入表单', false);
+      }
+    };
+    VOICE.rec = rec;
+    try { rec.start(); } catch (e) { voiceState('语音启动失败，可以直接打字', false); }
+  }
+  function stopVoice(){
+    VOICE.listening = false;
+    if (VOICE.rec) { try { VOICE.rec.stop(); } catch (e) {} }
+  }
+  function stopVoiceNow(){
+    VOICE.dead = true;
+    VOICE.listening = false;
+    if (VOICE.rec) { try { VOICE.rec.abort(); } catch (e) {} }
+    VOICE.rec = null;
+  }
+
+  function voiceFill(){
+    var ta = $('#voiceText');
+    var text = ta ? ta.value.trim() : VOICE.text;
+    if (!text) { toast('先说点什么，或者直接打字'); if (ta) ta.focus(); return; }
+    var cat = VOICE.cat || classifyVoice(text);
+    stopVoiceNow();
+    closeSheet();
+    openVoiceForm(cat, text);
+  }
+  function openVoiceForm(cat, text){
+    if (cat === 'todo') {
+      todoSheet(null, { title: voiceTodoTitle(text), time: voiceTodoTime(text), way: voiceWay(text) });
+      toast('已填入待办，确认后保存');
+    } else if (cat === 'expense') {
+      expenseSheet(null, { date: today(), amount: parseVoiceAmount(text) || '', cat: guessExpenseCat(text), note: text });
+      toast('已填入消费，确认后保存');
+    } else if (cat === 'stock') {
+      openVoiceStock(text);
+    } else if (cat === 'read') {
+      readSheet(null, { date: today(), book: parseBookName(text), pages: parseVoicePages(text), quotes: text });
+      toast('已填入阅读，确认后保存');
+    } else {
+      thoughtSheet(null, { date: today(), text: text });
+      toast('已填入感悟，确认后保存');
+    }
+  }
+  function openVoiceStock(text){
+    if (/持仓|成本|现价|加仓|减仓|仓位/.test(text) && !/做\s*T/.test(text)) {
+      holdSheet(null, { name: guessStockName(text) });
+      toast('已填入持仓，确认后保存');
+    } else if (/做\s*T|赚了|亏了|卖出|买入|成交|手续费|止盈|止损/.test(text)) {
+      ttradeSheet(null, { date: today(), stock: guessStockName(text), pnl: parseVoicePnl(text), note: text });
+      toast('已填入做 T，确认后保存');
+    } else {
+      journalSheet(today(), { market: text });
+      toast('已填入大盘评价，确认后保存');
+    }
+  }
+
   /* ---------------- 设置 ---------------- */
   function settingsSheet(){
     state.sheet = 'settings'; state.editing = null;
@@ -1579,18 +2129,23 @@
           '<button class="sync-btn" data-act="sync-now">立即同步</button>' +
         '</div>' +
         '<div class="set-list">' +
+          '<button class="set-row" data-act="voice">语音记一笔<span>说一句话，自动分类并预填表单</span></button>' +
           '<button class="set-row" data-act="open-qr">手机扫码打开<span>显示二维码，手机扫一扫进入</span></button>' +
           '<button class="set-row" data-act="export">导出备份（JSON）<span>工作、股票、阅读的全部记录</span></button>' +
           '<button class="set-row" data-act="import">导入备份<span>选择之前导出的 JSON 文件</span></button>' +
           '<button class="set-row danger" id="clearRow" data-act="clear">清空所有数据<span>删除全部记录，其他设备同步后也会清空</span></button>' +
         '</div>' +
-        '<p class="note" id="syncNote">数据保存在云端（Supabase），手机和电脑打开同一个网址就能自动同步，不用连同一个 Wi-Fi。</p>' +
+        '<p class="note" id="syncNote">数据保存在腾讯云开发（CloudBase · 上海），手机和电脑打开同一个网址就能自动同步，不用连同一个 Wi-Fi。</p>' +
       '</div>' +
       '<div class="sheet-foot"><button class="btn-primary" data-act="close-sheet">完成</button></div>'
     );
     updateSyncUI();
     var note = $('#syncNote');
-    if (note && !CLOUD.ready) note.textContent = '还没有配置云端：请按「使用说明.md」填写 config.js 里的三个值，再重新打开页面。';
+    if (note && !CLOUD.ready) note.textContent = '还没有配置云端：请按「使用说明.md」填写 config.js 里的 cloudbaseEnv / accessKey / space，再重新打开页面。';
+    else if (note && SYNC.error) {
+      note.textContent = '云端连接异常：' + SYNC.error + (SYNC.detail ? '（' + SYNC.detail + '）' : '') +
+        '。如果是「无访问权限」，需要在 CloudBase 控制台给 states 表授权 anon 读写。';
+    }
   }
 
   /* ================= 删除 / 撤销 ================= */
@@ -1645,7 +2200,7 @@
         if (!confirm('导入会覆盖当前全部记录，确定继续吗？')) return;
         db = normalize(o);
         var now = Date.now();
-        ['todos','holdings','journals','tTrades','readings','thoughts'].forEach(function(k){
+        ['todos','holdings','journals','tTrades','readings','thoughts','expenses'].forEach(function(k){
           db[k].forEach(function(it){ it.u = it.u || now; });
         });
         db.account.u = db.account.u || now;
@@ -1657,7 +2212,7 @@
   }
   function clearAll(){
     var now = Date.now(), tombstones = {};
-    ['todos','holdings','journals','tTrades','readings','thoughts'].forEach(function(k){
+    ['todos','holdings','journals','tTrades','readings','thoughts','expenses'].forEach(function(k){
       (db[k] || []).forEach(function(it){ tombstones[k + ':' + it.id] = now; });
     });
     db = blank();
@@ -1689,6 +2244,17 @@
     var id = el.getAttribute('data-id');
 
     if (act === 'settings') { settingsSheet(); return; }
+    if (act === 'voice') { voiceSheet(); return; }
+    if (act === 'voice-toggle') { startVoice(); return; }
+    if (act === 'voice-cat') {
+      VOICE.picked = true;
+      VOICE.cat = el.getAttribute('data-cat');
+      $$('#voiceCats button').forEach(function(b){ b.classList.toggle('on', b === el); });
+      var vlab = $('#voiceCatLabel');
+      if (vlab) vlab.textContent = '· ' + voiceCatLabel(VOICE.cat);
+      return;
+    }
+    if (act === 'voice-fill') { voiceFill(); return; }
     if (act === 'sync-now') { syncNow(); return; }
     if (act === 'open-qr') {
       if (/^https?:/.test(location.protocol)) window.open('qr.html', '_blank');
@@ -1734,7 +2300,9 @@
     if (act === 'del-todo') { if (state.editing) deleteById('todos', state.editing.id, '已删除待办'); return; }
 
     if (act === 'stock-add') {
-      if (state.stockSub === 'hold') holdSheet(); else journalSheet(today());
+      if (state.stockSub === 'hold') holdSheet();
+      else if (state.stockSub === 'review') journalSheet(today());
+      else expenseSheet();
       return;
     }
     if (act === 'edit-account') { accountSheet(); return; }
@@ -1746,6 +2314,20 @@
     }
     if (act === 'save-hold') { saveHold(); return; }
     if (act === 'del-hold') { if (state.editing) deleteById('holdings', state.editing.id, '已删除持仓'); return; }
+
+    if (act === 'new-expense') { expenseSheet(); return; }
+    if (act === 'edit-expense') {
+      var ex = db.expenses.filter(function(y){ return y.id === id; })[0];
+      if (ex) expenseSheet(ex);
+      return;
+    }
+    if (act === 'save-expense') { saveExpense(); return; }
+    if (act === 'del-expense') { if (state.editing) deleteById('expenses', state.editing.id, '已删除这笔消费'); return; }
+    if (act === 'expense-cat') {
+      $('#fCat').value = el.getAttribute('data-cat');
+      $$('#catChips button').forEach(function(b){ b.classList.toggle('on', b === el); });
+      return;
+    }
 
     if (act === 'edit-journal') { journalSheet(el.getAttribute('data-date') || today()); return; }
     if (act === 'save-journal') { saveJournal(); return; }
@@ -1809,6 +2391,10 @@
     }
     if (ev.target.id === 'fCost' || ev.target.id === 'fPrice') updateHoldCalc();
     if (ev.target.id === 'fCap' || ev.target.id === 'fPnl') updateAcctCalc();
+    if (ev.target.id === 'voiceText') {
+      VOICE.text = ev.target.value;
+      if (!VOICE.picked && VOICE.text.trim()) autoClassifyVoice(VOICE.text);
+    }
   });
 
   document.addEventListener('keydown', function(ev){
@@ -1826,6 +2412,18 @@
   window.addEventListener('hashchange', route);
 
   /* ================= 启动 ================= */
+  /* 控制台自检用：window.DAILY.info() 看同步状态，window.DAILY.db 看当前数据 */
+  window.DAILY = {
+    get db(){ return db; },
+    get state(){ return state; },
+    info: function(){ return { ready: CLOUD.ready, on: SYNC.on, rev: SYNC.rev, last: SYNC.last, busy: SYNC.busy, dirty: SYNC.dirty, error: SYNC.error, detail: SYNC.detail, row: ROW_ID }; },
+    sync: function(){ return syncNow(); },
+    classify: classifyVoice,
+    todoTime: voiceTodoTime,
+    amount: parseVoiceAmount,
+    pnl: parseVoicePnl
+  };
+
   buildNav();
   render();
   route();
